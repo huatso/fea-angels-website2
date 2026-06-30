@@ -233,9 +233,9 @@ function Index() {
                 transition={{ delay: i * 0.07, duration: 0.45 }}
                 className="group grayscale-card border border-border bg-card p-6 soft-lift"
               >
-                <div className="aspect-video mb-5 bg-secondary overflow-hidden">
+                <div className="h-32 w-32 mb-5 mx-auto bg-secondary overflow-hidden">
                   {s.logo_url ? (
-                    <img src={s.logo_url} alt={s.name} className="h-full w-full object-cover" />
+                    <img src={s.logo_url} alt={s.name} className="h-full w-full object-contain" />
                   ) : (
                     <div className="h-full w-full flex items-center justify-center">
                       <span className="font-serif text-2xl font-semibold text-navy/40">{s.name[0]}</span>
