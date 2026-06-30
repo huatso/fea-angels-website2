@@ -146,7 +146,7 @@ function Index() {
           <div className="max-w-2xl">
             <div className="eyebrow mb-6">FEA Angels</div>
 
-            <h1 className="font-serif text-5xl leading-[1.05] text-navy sm:text-6xl lg:text-7xl">
+            <h1 className="font-serif text-4xl leading-[1.05] text-navy break-words sm:text-5xl lg:text-7xl">
               {heroTitle.replace(heroHighlight, "")}
               <span className="text-cyan-deep">{heroHighlight}</span>
             </h1>
