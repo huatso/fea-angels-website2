@@ -109,6 +109,17 @@ function Contato() {
                   FEA-USP, São Paulo – SP, 05508-010
                 </p>
               </div>
+              <div className="mt-4 aspect-video w-full border border-border overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.2592656936354!2d-46.73177898833778!3d-23.559130161423344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce56158c000001%3A0x8e43cbfdb9bb3617!2sFaculdade%20de%20Economia%2C%20Administra%C3%A7%C3%A3o%2C%20Contabilidade%20e%20Atu%C3%A1ria%20da%20Universidade%20de%20S%C3%A3o%20Paulo%20(FEA-USP)!5e0!3m2!1spt-BR!2sbr!4v1782845839136!5m2!1spt-BR!2sbr"
+                  className="h-full w-full"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  title="Mapa — FEA Angels"
+                />
+              </div>
             </div>
 
             <div>
