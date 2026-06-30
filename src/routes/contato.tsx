@@ -31,7 +31,7 @@ function Contato() {
     const get = (k: string) => (fd.get(k) as string) || "";
     try {
       await sendContactEmail({
-        data: { name: get("name"), email: get("email"), message: get("message") },
+        data: { name: get("name"), email: get("email"), msg: get("message") },
       });
       toast.success("Mensagem enviada! Retornaremos em breve.");
       form.reset();
