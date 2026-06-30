@@ -157,7 +157,7 @@ function Index() {
 
             <div className="mt-12 flex flex-wrap gap-4">
               <Link
-                to="/cadastro"
+                to="/contato"
                 className="inline-flex items-center gap-2 bg-navy text-white px-8 py-4 nav-label transition-all hover:opacity-90 active:scale-[0.98]"
               >
                 Quero Investir <ArrowRight className="h-4 w-4" />

@@ -77,7 +77,7 @@ export function Header() {
           ) : (
             <>
               <Link
-                to="/cadastro"
+                to="/contato"
                 className="border-2 border-navy text-navy px-5 py-2 nav-label transition-all hover:bg-navy hover:text-white"
               >
                 Quero Investir
@@ -122,7 +122,7 @@ export function Header() {
             {!user && (
               <div className="mt-4 flex flex-col gap-2 pt-4">
                 <Link
-                  to="/cadastro"
+                  to="/contato"
                   onClick={() => setOpen(false)}
                   className="border-2 border-navy text-navy px-5 py-2.5 nav-label text-center"
                 >

@@ -27,8 +27,8 @@ export const env = {
   CONTACT_EMAIL: get("VITE_CONTACT_EMAIL", "contato@feaangels.com.br"),
   CONTACT_PHONE: get("VITE_CONTACT_PHONE", "+55 11 99999-9999"),
 
-  SOCIAL_INSTAGRAM: get("VITE_SOCIAL_INSTAGRAM"),
-  SOCIAL_LINKEDIN: get("VITE_SOCIAL_LINKEDIN"),
+  SOCIAL_INSTAGRAM: get("VITE_SOCIAL_INSTAGRAM", "https://instagram.com/feaangels"),
+  SOCIAL_LINKEDIN: get("VITE_SOCIAL_LINKEDIN", "https://linkedin.com/company/feaangels"),
   SOCIAL_YOUTUBE: get("VITE_SOCIAL_YOUTUBE"),
 
   CHAT_MODEL: get("VITE_CHAT_MODEL", "google/gemini-3-flash-preview"),
