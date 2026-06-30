@@ -29,7 +29,7 @@ const pageLabels: Record<string, string> = {
 
 const sectionLabels: Record<string, string> = {
   email_to: "E-mail destinatário (testes)",
-  youtube_url: "YouTube (URL do vídeo)",
+  video_url: "Recap em vídeo (link do Vimeo ou YouTube)",
   hero_title: "Título do Hero",
   hero_title_highlight: "Destaque no título",
   hero_description: "Descrição do Hero",

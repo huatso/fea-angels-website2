@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useState, useEffect } from "react";
 import { ArrowRight, Play } from "lucide-react";
-import { sendStartupEmail } from "@/lib/email.server";
+import { supabase } from "@/lib/supabase";
+
+const DEALUM_URL =
+  "https://app.dealum.com/#/company/application/new/137361/nez1qhssrrnsxl1n4x3cta21oq9bvp40";
+const DEFAULT_VIDEO_URL = "https://vimeo.com/1205901522";
 
 export const Route = createFileRoute("/startups")({
   head: () => ({
@@ -22,34 +25,19 @@ export const Route = createFileRoute("/startups")({
 });
 
 function Startups() {
-  const [sending, setSending] = useState(false);
+  const [videoUrl, setVideoUrl] = useState(DEFAULT_VIDEO_URL);
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSending(true);
-    const form = e.target as HTMLFormElement;
-    const fd = new FormData(form);
-    const get = (k: string) => (fd.get(k) as string) || "";
-    try {
-      await sendStartupEmail({
-        data: {
-          company: get("company"),
-          website: get("website"),
-          founder: get("founder"),
-          email: get("email"),
-          stage: get("stage"),
-          sector: get("sector"),
-          pitch: get("pitch"),
-        },
+  useEffect(() => {
+    supabase
+      .from("page_content")
+      .select("content")
+      .eq("page", "startups")
+      .eq("section", "video_url")
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data?.content) setVideoUrl(data.content);
       });
-      toast.success("Submissão recebida! Entraremos em contato em até 3 semanas.");
-      form.reset();
-    } catch {
-      toast.error("Erro ao enviar. Tente novamente.");
-    } finally {
-      setSending(false);
-    }
-  }
+  }, []);
 
   return (
     <div className="pt-16">
@@ -83,7 +71,7 @@ function Startups() {
           ))}
         </div>
 
-        {/* Vimeo */}
+        {/* Recap em vídeo */}
         <div className="mb-20 border border-border bg-surface-container-low overflow-hidden">
           <div className="p-8 pb-0">
             <div className="flex items-center gap-2 mb-3">
@@ -94,81 +82,126 @@ function Startups() {
               Reviva a energia do nosso último evento.
             </h3>
           </div>
-          <div className="mt-4 mx-auto max-w-sm">
-            <div style={{ padding: "177.78% 0 0 0", position: "relative" }}>
-              <iframe
-                src="https://player.vimeo.com/video/1205901522?badge=0&autopause=0&player_id=0&app_id=58479"
-                frameBorder="0"
-                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-                title="Recap Minverva - FEA ANGELS"
-              />
-            </div>
-          </div>
+          <VideoEmbed url={videoUrl} />
         </div>
 
-        {/* Formulário */}
+        {/* Em quem investimos */}
+        <div className="max-w-2xl mb-20">
+          <h2 className="font-serif text-3xl text-ink mb-6">Em quem investimos</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            Organizamos eventos para apresentar startups em fases de:
+          </p>
+          <ul className="list-disc pl-6 space-y-1 mt-3 text-muted-foreground">
+            <li>Faturamento anual menor que R$ 500 mil</li>
+            <li>Faturamento anual maior que R$ 500 mil</li>
+          </ul>
+          <p className="text-muted-foreground leading-relaxed mt-6">
+            Para sua startup chegar ao nosso grupo de investidores, deve respeitar alguns
+            critérios:
+          </p>
+          <ul className="list-disc pl-6 space-y-1 mt-3 text-muted-foreground">
+            <li>
+              A empresa deve ser uma startup: empresa de base tecnológica com um modelo de
+              negócios repetível e escalável.
+            </li>
+            <li>Enviar um pitch deck em formato PDF que contenha em média 20 slides.</li>
+          </ul>
+        </div>
+
+        {/* Como funciona */}
         <div className="max-w-2xl">
-          <h2 className="font-serif text-3xl text-ink mb-10">Formulário de submissão</h2>
-          <form onSubmit={onSubmit} className="space-y-7">
-            <div className="grid gap-7 sm:grid-cols-2">
-              <Field label="Nome da startup" name="company" required />
-              <Field label="Site" name="website" type="url" placeholder="https://" />
-            </div>
-            <div className="grid gap-7 sm:grid-cols-2">
-              <Field label="Seu nome" name="founder" required />
-              <Field label="E-mail" name="email" type="email" required />
-            </div>
-            <div className="grid gap-7 sm:grid-cols-2">
-              <Field label="Estágio" name="stage" placeholder="Ideação, MVP, tração inicial, escala..." />
-              <Field label="Setor" name="sector" placeholder="Fintech, SaaS, Healthtech..." />
-            </div>
-            <TextField label="Descreva sua startup (2–3 parágrafos)" name="pitch" required rows={6} />
-            <button
-              type="submit"
-              disabled={sending}
-              className="inline-flex items-center gap-2 bg-navy text-white px-8 py-4 nav-label transition-all hover:opacity-90 disabled:opacity-60"
-            >
-              {sending ? "Enviando..." : "Enviar submissão"}
-              {!sending && <ArrowRight className="h-4 w-4" />}
-            </button>
-          </form>
+          <h2 className="font-serif text-3xl text-ink mb-6">Como funciona?</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            Guia da Startup FEA Angels — saiba mais sobre nosso processo.
+          </p>
+          <p className="text-muted-foreground leading-relaxed mt-4">
+            Nós operamos como uma "vitrine" na qual você, empreendedor, pode compartilhar seu
+            modelo de negócios com o comitê de seleção. Assim que submeter seu pitch, ele será
+            avaliado para apresentação de fato aos investidores.
+          </p>
+          <p className="text-muted-foreground leading-relaxed mt-6">
+            Recomendamos que o pitch submetido contenha os seguintes pontos:
+          </p>
+          <ul className="list-disc pl-6 space-y-1 mt-3 text-muted-foreground">
+            <li>
+              <strong className="text-ink">Problema:</strong> qual é o problema e quem é afetado.
+            </li>
+            <li>
+              <strong className="text-ink">Solução:</strong> qual é o produto ou serviço, como
+              funciona e como ameniza ou resolve o problema.
+            </li>
+            <li>
+              <strong className="text-ink">Modelo de negócios:</strong> modelo de faturamento,
+              quanto e como se cobra, incentivos ao consumidor.
+            </li>
+            <li>
+              <strong className="text-ink">Gestão:</strong> equipe (formação e histórico dos
+              sócios), mentores/advisors.
+            </li>
+            <li>
+              <strong className="text-ink">Mercado:</strong> tamanho, oportunidades e mercados de
+              atuação (% de crescimento, cenário, etc.).
+            </li>
+            <li>
+              <strong className="text-ink">Concorrência:</strong> direta e indireta e vantagens
+              competitivas.
+            </li>
+            <li>
+              <strong className="text-ink">Futuro:</strong> estratégias de crescimento e
+              projeções de resultados esperados para os próximos anos.
+            </li>
+            <li>
+              <strong className="text-ink">Informações da rodada:</strong> valor buscado pela
+              empresa, aplicação dos recursos, valuation, captable e modelo de contrato.
+            </li>
+          </ul>
+
+          <p className="text-muted-foreground leading-relaxed mt-8 mb-4">
+            Envie o seu pitch preenchendo o formulário:
+          </p>
+          <a
+            href={DEALUM_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 bg-navy text-white px-8 py-4 nav-label transition-all hover:opacity-90 active:scale-[0.98]"
+          >
+            Acesse o Formulário <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
       </div>
     </div>
   );
 }
 
-function Field({
-  label, name, type = "text", required, placeholder,
-}: { label: string; name: string; type?: string; required?: boolean; placeholder?: string }) {
-  return (
-    <label className="block">
-      <span className="nav-label text-muted-foreground block mb-2">{label}{required && " *"}</span>
-      <input
-        name={name}
-        type={type}
-        required={required}
-        placeholder={placeholder}
-        className="w-full border-b border-border bg-transparent px-0 py-2.5 text-sm outline-none transition-colors focus:border-navy placeholder:text-muted-foreground/40"
-      />
-    </label>
-  );
-}
+function VideoEmbed({ url }: { url: string }) {
+  const vimeoId = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)?.[1];
 
-function TextField({
-  label, name, required, rows = 4,
-}: { label: string; name: string; required?: boolean; rows?: number }) {
+  if (vimeoId) {
+    return (
+      <div className="mt-4 mx-auto max-w-sm">
+        <div style={{ padding: "177.78% 0 0 0", position: "relative" }}>
+          <iframe
+            src={`https://player.vimeo.com/video/${vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479`}
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+            title="Recap — Minerva | FEA Angels"
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <label className="block">
-      <span className="nav-label text-muted-foreground block mb-2">{label}{required && " *"}</span>
-      <textarea
-        name={name}
-        required={required}
-        rows={rows}
-        className="w-full border-b border-border bg-transparent px-0 py-2.5 text-sm outline-none transition-colors focus:border-navy resize-none"
+    <div className="mt-4 aspect-video w-full">
+      <iframe
+        src={url.replace("watch?v=", "embed/").replace("shorts/", "embed/")}
+        title="Recap — Minerva | FEA Angels"
+        className="h-full w-full"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
       />
-    </label>
+    </div>
   );
 }
