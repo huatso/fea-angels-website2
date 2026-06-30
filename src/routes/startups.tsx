@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { ArrowRight, Play } from "lucide-react";
 import { sendStartupEmail } from "@/lib/email.server";
-import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/startups")({
   head: () => ({
@@ -12,25 +11,18 @@ export const Route = createFileRoute("/startups")({
       { name: "description", content: "Submeta sua startup para a FEA Angels." },
     ],
     links: [{ rel: "canonical", href: "https://feaangels.com.br/startups" }],
+    scripts: [
+      {
+        src: "https://player.vimeo.com/api/player.js",
+        id: "vimeo-player",
+      },
+    ],
   }),
   component: Startups,
 });
 
 function Startups() {
   const [sending, setSending] = useState(false);
-  const [youtubeUrl, setYoutubeUrl] = useState("https://youtube.com/shorts/KJ--nap3q8A");
-
-  useEffect(() => {
-    supabase
-      .from("page_content")
-      .select("content")
-      .eq("page", "startups")
-      .eq("section", "youtube_url")
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data?.content) setYoutubeUrl(data.content);
-      });
-  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -91,29 +83,30 @@ function Startups() {
           ))}
         </div>
 
-        {/* YouTube */}
-        {youtubeUrl && (
-          <div className="mb-20 border border-border bg-surface-container-low overflow-hidden">
-            <div className="p-8 pb-0">
-              <div className="flex items-center gap-2 mb-3">
-                <Play className="h-4 w-4 text-cyan-deep" />
-                <p className="eyebrow text-cyan-deep before:content-none">Recap — Minerva</p>
-              </div>
-              <h3 className="font-serif text-2xl text-ink">
-                Reviva a energia do nosso último evento.
-              </h3>
+        {/* Vimeo */}
+        <div className="mb-20 border border-border bg-surface-container-low overflow-hidden">
+          <div className="p-8 pb-0">
+            <div className="flex items-center gap-2 mb-3">
+              <Play className="h-4 w-4 text-cyan-deep" />
+              <p className="eyebrow text-cyan-deep before:content-none">Recap — Minerva</p>
             </div>
-            <div className="mt-4 aspect-video w-full">
+            <h3 className="font-serif text-2xl text-ink">
+              Reviva a energia do nosso último evento.
+            </h3>
+          </div>
+          <div className="mt-4 mx-auto max-w-sm">
+            <div style={{ padding: "177.78% 0 0 0", position: "relative" }}>
               <iframe
-                src={youtubeUrl.replace("watch?v=", "embed/").replace("shorts/", "embed/")}
-                title="Recap — Minerva | FEA Angels"
-                className="h-full w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
+                src="https://player.vimeo.com/video/1205901522?badge=0&autopause=0&player_id=0&app_id=58479"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+                title="Recap Minverva - FEA ANGELS"
               />
             </div>
           </div>
-        )}
+        </div>
 
         {/* Formulário */}
         <div className="max-w-2xl">
