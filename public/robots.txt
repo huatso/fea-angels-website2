@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://feaangels.com.br/sitemap.xml

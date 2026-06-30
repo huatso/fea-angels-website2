@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fea-angels-website",
+  "main": "dist/server/index.mjs",
+  "compatibility_date": "2026-06-11",
+  "observability": {
+    "enabled": true
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "alias": {
+    "tslib": "./node_modules/tslib/tslib.js"
+  },
+  "vars": {
+    "VITE_SUPABASE_URL": "https://vhzweugjodimgjkqlaur.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoendldWdqb2RpbWdqa3FsYXVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjIzMzEsImV4cCI6MjA5NzI5ODMzMX0.ycE5VcFc0oIdUB2SJ9RFG1BDvZ0-6bDx_ZcRZkcELSs",
+    "AI_API_URL": "https://openrouter.ai/api/v1/chat/completions"
+  }
+}
