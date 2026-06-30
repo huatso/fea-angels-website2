@@ -8,6 +8,12 @@ const LOGO_URL =
 const LOGO_BRANCA =
   "https://vhzweugjodimgjkqlaur.supabase.co/storage/v1/object/public/images/logos/Logo%20FEA%20Angels%20-%20Branca.png";
 
+function env(key: string): string {
+  const val = process.env[key];
+  if (val) return val;
+  throw new Error(`Missing env var: ${key}`);
+}
+
 function getTransporter() {
   const key = process.env.RESEND_API_KEY;
   if (!key) throw new Error("RESEND_API_KEY not configured");
@@ -47,21 +53,16 @@ function brandedHtml(bodyContent: string): string {
 }
 
 async function getRecipient(): Promise<string> {
-  try {
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (key) {
-      const supabase = createClient(process.env.VITE_SUPABASE_URL!, key);
-      const { data } = await supabase
-        .from("page_content")
-        .select("content")
-        .eq("page", "config")
-        .eq("section", "email_to")
-        .order("id", { ascending: false })
-        .limit(1)
-        .single();
-      if (data?.content) return data.content as string;
-    }
-  } catch {}
+  const supabase = createClient(env("VITE_SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"));
+  const { data } = await supabase
+    .from("page_content")
+    .select("content")
+    .eq("page", "config")
+    .eq("section", "email_to")
+    .order("id", { ascending: false })
+    .limit(1)
+    .single();
+  if (data?.content) return data.content as string;
   return process.env.SMTP_TO || "contato@feaangels.com.br";
 }
 
@@ -126,7 +127,7 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
   .inputValidator(z.object({ name: z.string(), email: z.string().email() }))
   .handler(async ({ data }) => {
     const { name, email } = data;
-    const supabase = createClient(process.env.VITE_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+    const supabase = createClient(env("VITE_SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"));
 
     const { error } = await supabase.from("newsletter_subscribers").upsert(
       { name, email },

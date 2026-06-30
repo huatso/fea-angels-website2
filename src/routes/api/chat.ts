@@ -33,12 +33,7 @@ export const Route = createFileRoute("/api/chat")({
     handlers: {
       POST: async ({ request }) => {
         const apiKey = process.env.AI_API_KEY;
-        if (!apiKey) {
-          return new Response(
-            JSON.stringify({ error: "AI_API_KEY não configurada." }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-          );
-        }
+        if (!apiKey) throw new Error("Missing env var: AI_API_KEY");
 
         let body: { messages?: unknown; model?: unknown };
         try {
