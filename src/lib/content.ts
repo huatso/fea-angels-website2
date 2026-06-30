@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 
 type ContentMap = Record<string, string>;
@@ -25,6 +26,41 @@ export async function saveContent(id: number, content: string) {
     .from("page_content")
     .update({ content, updated_at: new Date().toISOString() })
     .eq("id", id);
+}
+
+export async function getNewsletterEnabled(): Promise<boolean> {
+  const { data } = await supabase
+    .from("page_content")
+    .select("content")
+    .eq("page", "config")
+    .eq("section", "newsletter_enabled")
+    .maybeSingle();
+  return data?.content === "true";
+}
+
+export async function setNewsletterEnabled(enabled: boolean) {
+  const { data: existing } = await supabase
+    .from("page_content")
+    .select("id")
+    .eq("page", "config")
+    .eq("section", "newsletter_enabled")
+    .maybeSingle();
+  const content = String(enabled);
+  if (existing) {
+    return supabase
+      .from("page_content")
+      .update({ content, updated_at: new Date().toISOString() })
+      .eq("id", existing.id);
+  }
+  return supabase.from("page_content").insert({ page: "config", section: "newsletter_enabled", content });
+}
+
+export function useNewsletterEnabled() {
+  const [enabled, setEnabled] = useState(false);
+  useEffect(() => {
+    getNewsletterEnabled().then(setEnabled);
+  }, []);
+  return enabled;
 }
 
 export type PortfolioItem = {

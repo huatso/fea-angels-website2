@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { getEvents, getUpcoming, getPast } from "@/lib/events.server";
 import { sendNewsletterEmail } from "@/lib/email.server";
+import { useNewsletterEnabled } from "@/lib/content";
 import { Bell, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/eventos")({
@@ -33,6 +34,7 @@ function Eventos() {
   const { upcoming, past } = Route.useLoaderData();
   const [email, setEmail] = useState("");
   const [subscribing, setSubscribing] = useState(false);
+  const newsletterEnabled = useNewsletterEnabled();
 
   async function onSubscribe(e: React.FormEvent) {
     e.preventDefault();
@@ -64,38 +66,40 @@ function Eventos() {
         {past.length > 0 && <Section title="Realizados" items={past} muted />}
 
         {/* Newsletter */}
-        <section className="mt-24 border-t border-border pt-16">
-          <div className="flex items-start gap-5">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-container-low border border-border">
-              <Bell className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <div className="flex-1">
-              <h2 className="font-serif text-2xl text-ink">Receba novidades</h2>
-              <p className="mt-1 text-sm text-muted-foreground max-w-md leading-relaxed">
-                Fique por dentro dos próximos Pitch Nights, workshops e encontros da rede.
-              </p>
+        {newsletterEnabled && (
+          <section className="mt-24 border-t border-border pt-16">
+            <div className="flex items-start gap-5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-container-low border border-border">
+                <Bell className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="flex-1">
+                <h2 className="font-serif text-2xl text-ink">Receba novidades</h2>
+                <p className="mt-1 text-sm text-muted-foreground max-w-md leading-relaxed">
+                  Fique por dentro dos próximos Pitch Nights, workshops e encontros da rede.
+                </p>
 
-              <form onSubmit={onSubscribe} className="mt-6 flex gap-3 max-w-sm">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seu@email.com"
-                  required
-                  className="flex-1 border-b border-border bg-transparent px-0 py-2 text-sm outline-none transition-colors focus:border-navy placeholder:text-muted-foreground/40"
-                />
-                <button
-                  type="submit"
-                  disabled={subscribing}
-                  className="inline-flex items-center gap-1.5 bg-navy text-white px-6 py-2.5 nav-label transition-all hover:opacity-90 disabled:opacity-60 whitespace-nowrap"
-                >
-                  {subscribing ? "Enviando..." : "Inscrever"}
-                  {!subscribing && <ArrowRight className="h-3.5 w-3.5" />}
-                </button>
-              </form>
+                <form onSubmit={onSubscribe} className="mt-6 flex gap-3 max-w-sm">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="seu@email.com"
+                    required
+                    className="flex-1 border-b border-border bg-transparent px-0 py-2 text-sm outline-none transition-colors focus:border-navy placeholder:text-muted-foreground/40"
+                  />
+                  <button
+                    type="submit"
+                    disabled={subscribing}
+                    className="inline-flex items-center gap-1.5 bg-navy text-white px-6 py-2.5 nav-label transition-all hover:opacity-90 disabled:opacity-60 whitespace-nowrap"
+                  >
+                    {subscribing ? "Enviando..." : "Inscrever"}
+                    {!subscribing && <ArrowRight className="h-3.5 w-3.5" />}
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </div>
     </div>
   );

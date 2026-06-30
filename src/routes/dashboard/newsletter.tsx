@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Trash2, Mail } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { getNewsletterEnabled, setNewsletterEnabled } from "@/lib/content";
+import { Switch } from "@/components/ui/switch";
 
 export const Route = createFileRoute("/dashboard/newsletter")({
   head: () => ({
@@ -23,6 +25,8 @@ function DashboardNewsletter() {
   const navigate = useNavigate();
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
+  const [enabled, setEnabled] = useState(false);
+  const [togglingEnabled, setTogglingEnabled] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) navigate({ to: "/login" });
@@ -38,11 +42,20 @@ function DashboardNewsletter() {
         setSubscribers((data ?? []) as Subscriber[]);
         setLoading(false);
       });
+    getNewsletterEnabled().then(setEnabled);
   }, [user]);
 
   async function handleDelete(id: number) {
     await supabase.from("newsletter_subscribers").delete().eq("id", id);
     setSubscribers((prev) => prev.filter((s) => s.id !== id));
+  }
+
+  async function handleToggleEnabled() {
+    setTogglingEnabled(true);
+    const next = !enabled;
+    await setNewsletterEnabled(next);
+    setEnabled(next);
+    setTogglingEnabled(false);
   }
 
   if (authLoading || loading) {
@@ -59,6 +72,20 @@ function DashboardNewsletter() {
         <p className="text-xs uppercase tracking-[0.25em] text-cyan-deep font-medium">Newsletter</p>
         <h1 className="mt-1 font-serif text-3xl text-ink">Inscritos</h1>
         <p className="mt-1 text-sm text-muted-foreground">{subscribers.length} inscrito(s) no total.</p>
+      </div>
+
+      <div className="mt-6 flex items-center justify-between rounded-xl border border-border bg-background p-4 shadow-sm">
+        <div>
+          <p className="text-sm font-medium text-ink">Módulo de newsletter</p>
+          <p className="text-xs text-muted-foreground">
+            Quando desativado, o formulário de inscrição some do site (rodapé, contato e eventos).
+          </p>
+        </div>
+        <Switch
+          checked={enabled}
+          disabled={togglingEnabled}
+          onCheckedChange={handleToggleEnabled}
+        />
       </div>
 
       {subscribers.length === 0 ? (

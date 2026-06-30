@@ -3,11 +3,13 @@ import { useState } from "react";
 import { Send } from "lucide-react";
 import { env } from "@/lib/env";
 import { sendNewsletterEmail } from "@/lib/email.server";
+import { useNewsletterEnabled } from "@/lib/content";
 import { toast } from "sonner";
 
 export function Footer() {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
+  const newsletterEnabled = useNewsletterEnabled();
 
   const socials = [
     { label: "Instagram", url: env.SOCIAL_INSTAGRAM },
@@ -33,7 +35,9 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-surface-container">
       {/* Main grid */}
-      <div className="mx-auto grid max-w-[1280px] gap-10 px-5 md:px-16 py-20 md:grid-cols-4">
+      <div
+        className={`mx-auto grid max-w-[1280px] gap-10 px-5 md:px-16 py-20 ${newsletterEnabled ? "md:grid-cols-4" : "md:grid-cols-3"}`}
+      >
 
         {/* Brand */}
         <div className="space-y-4">
@@ -100,30 +104,32 @@ export function Footer() {
         </div>
 
         {/* Newsletter */}
-        <div>
-          <h4 className="nav-label text-navy mb-5">Receba atualizações</h4>
-          <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-            Inscreva-se na FEA News para insights semanais sobre investimento e inovação.
-          </p>
-          <form onSubmit={onSubscribe} className="flex gap-2">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
-              required
-              className="flex-1 border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-navy placeholder:text-muted-foreground/50"
-            />
-            <button
-              type="submit"
-              disabled={sending}
-              className="bg-navy text-white p-2 transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center"
-              aria-label="Inscrever"
-            >
-              <Send className="h-4 w-4" />
-            </button>
-          </form>
-        </div>
+        {newsletterEnabled && (
+          <div>
+            <h4 className="nav-label text-navy mb-5">Receba atualizações</h4>
+            <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+              Inscreva-se na FEA News para insights sobre investimento e inovação.
+            </p>
+            <form onSubmit={onSubscribe} className="flex gap-2">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                required
+                className="flex-1 border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-navy placeholder:text-muted-foreground/50"
+              />
+              <button
+                type="submit"
+                disabled={sending}
+                className="bg-navy text-white p-2 transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center"
+                aria-label="Inscrever"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            </form>
+          </div>
+        )}
       </div>
 
       {/* Bottom bar */}

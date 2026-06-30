@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ArrowRight, Mail, MapPin, Instagram, Linkedin } from "lucide-react";
 import { sendContactEmail, sendNewsletterEmail } from "@/lib/email.server";
+import { useNewsletterEnabled } from "@/lib/content";
 
 export const Route = createFileRoute("/contato")({
   head: () => ({
@@ -20,6 +21,7 @@ function Contato() {
   const [sending, setSending] = useState(false);
   const [newsletter, setNewsletter] = useState("");
   const [subscribing, setSubscribing] = useState(false);
+  const newsletterEnabled = useNewsletterEnabled();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -159,40 +161,42 @@ function Contato() {
       </div>
 
       {/* Newsletter — fundo navy */}
-      <div className="bg-navy">
-        <div className="mx-auto max-w-[1280px] px-5 md:px-16 py-20">
-          <div className="grid gap-8 lg:grid-cols-2 items-center">
-            <div>
-              <div className="eyebrow text-white/60 mb-4 before:bg-white/40">Newsletter</div>
-              <h2 className="font-serif text-3xl text-white lg:text-4xl">
-                Receba novidades da rede.
-              </h2>
-              <p className="mt-3 text-white/70 max-w-md leading-relaxed">
-                Acompanhe eventos, análises de mercado e oportunidades de investimento
-                diretamente na sua caixa de entrada.
-              </p>
+      {newsletterEnabled && (
+        <div className="bg-navy">
+          <div className="mx-auto max-w-[1280px] px-5 md:px-16 py-20">
+            <div className="grid gap-8 lg:grid-cols-2 items-center">
+              <div>
+                <div className="eyebrow text-white/60 mb-4 before:bg-white/40">Newsletter</div>
+                <h2 className="font-serif text-3xl text-white lg:text-4xl">
+                  Receba novidades da rede.
+                </h2>
+                <p className="mt-3 text-white/70 max-w-md leading-relaxed">
+                  Acompanhe eventos, análises de mercado e oportunidades de investimento
+                  diretamente na sua caixa de entrada.
+                </p>
+              </div>
+              <form onSubmit={onNewsletter} className="flex gap-3 max-w-md">
+                <input
+                  type="email"
+                  value={newsletter}
+                  onChange={(e) => setNewsletter(e.target.value)}
+                  placeholder="seu@email.com"
+                  required
+                  className="flex-1 border-b border-white/30 bg-transparent px-0 py-2.5 text-sm text-white outline-none transition-colors focus:border-white placeholder:text-white/40"
+                />
+                <button
+                  type="submit"
+                  disabled={subscribing}
+                  className="inline-flex items-center gap-1.5 bg-white text-navy px-6 py-2.5 nav-label transition-all hover:opacity-90 disabled:opacity-60 whitespace-nowrap"
+                >
+                  {subscribing ? "Enviando..." : "Inscrever"}
+                  {!subscribing && <ArrowRight className="h-3.5 w-3.5" />}
+                </button>
+              </form>
             </div>
-            <form onSubmit={onNewsletter} className="flex gap-3 max-w-md">
-              <input
-                type="email"
-                value={newsletter}
-                onChange={(e) => setNewsletter(e.target.value)}
-                placeholder="seu@email.com"
-                required
-                className="flex-1 border-b border-white/30 bg-transparent px-0 py-2.5 text-sm text-white outline-none transition-colors focus:border-white placeholder:text-white/40"
-              />
-              <button
-                type="submit"
-                disabled={subscribing}
-                className="inline-flex items-center gap-1.5 bg-white text-navy px-6 py-2.5 nav-label transition-all hover:opacity-90 disabled:opacity-60 whitespace-nowrap"
-              >
-                {subscribing ? "Enviando..." : "Inscrever"}
-                {!subscribing && <ArrowRight className="h-3.5 w-3.5" />}
-              </button>
-            </form>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
