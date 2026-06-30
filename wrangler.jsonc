@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "fea-angels-website",
+  "name": "fea-angels-website2",
   "main": "dist/server/index.mjs",
   "compatibility_date": "2026-06-11",
   "observability": {
